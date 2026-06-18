@@ -1,6 +1,7 @@
 "use client";
 import React, { useState, useRef, useEffect, useCallback } from "react";
 import { X } from "lucide-react";
+import VanishText from "./VanishText";
 
 /* ------------------------------------------------------------------ */
 /*  Data                                                               */
@@ -75,13 +76,41 @@ const CUTS_DETAILS: Record<string, { title: string; items: { name: string; sub: 
 };
 
 /* ------------------------------------------------------------------ */
+/*  Assembly pieces — each primal region is a clipped slice of the     */
+/*  diagram that flies in from a different edge of the screen.         */
+/* ------------------------------------------------------------------ */
+const PIECES: { id: string; polys: string[]; from: { x: number; y: number; r: number } }[] = [
+  { id: "chuck", polys: ["264,68,266,81,265,94,263,112,259,131,254,149,247,169,239,182,227,196,217,206,200,216,209,228,217,242,224,259,230,276,234,286,259,281,281,276,307,271,327,268,346,266,363,265,383,265,393,265,391,241,390,221,390,205,389,183,389,162,387,141,384,123,383,108,383,98,381,88"], from: { x: -1100, y: -650, r: -20 } },
+  { id: "rib", polys: ["386,86,389,107,392,127,393,149,393,170,393,191,395,213,395,233,398,254,396,263,421,263,439,263,460,261,477,261,494,261,506,261,505,239,502,210,499,181,496,158,492,140,489,123,485,106,479,91"], from: { x: -200, y: -820, r: 14 } },
+  { id: "short_loin", polys: ["484,90,487,100,493,114,496,130,499,145,501,161,504,178,506,197,507,218,509,233,510,248,511,263,528,264,547,265,567,265,586,265,603,267,606,247,604,223,603,201,600,180,597,160,593,137,587,112,577,90"], from: { x: 700, y: -760, r: 18 } },
+  { id: "sirloin", polys: ["581,89,590,106,596,129,601,154,606,177,608,197,608,212,610,232,608,252,607,266,631,269,658,273,676,277,693,289,708,302,716,309,721,286,721,266,721,247,720,230,718,210,717,193,717,174,714,156,711,136,708,120,703,103,690,81"], from: { x: 1250, y: -150, r: -12 } },
+  { id: "round", polys: ["696,79,706,97,714,122,717,146,721,173,723,194,726,223,726,256,726,283,723,312,748,312,774,316,800,322,820,323,830,296,838,269,843,250,857,239,857,204,853,179,846,156,837,133,826,113,816,94,806,81,778,76"], from: { x: 1200, y: 560, r: 16 } },
+  { id: "brisket", polys: ["237,293,266,284,297,279,327,274,359,272,393,270,396,302,396,339,394,353,333,359,313,366,287,360,269,347"], from: { x: -1250, y: 150, r: 10 } },
+  { id: "plate", polys: ["399,267,399,289,401,306,403,325,400,345,396,352,421,356,441,350,457,349,476,349,490,349,510,353,526,353,541,353,561,350,584,346,593,325,597,309,600,294,603,272"], from: { x: 100, y: 880, r: -10 } },
+  { id: "flank", polys: ["590,346,598,325,604,303,607,282,606,269,634,270,653,273,668,277,681,286,691,293,701,300,711,312"], from: { x: -850, y: 720, r: -16 } },
+  { id: "shank", polys: ["320,368,329,381,334,395,339,406,344,419,356,421,369,406,377,394,383,381,390,366,394,359,354,359", "708,319,730,332,747,346,761,356,777,366,790,372,807,376,816,362,814,347,813,327,754,315"], from: { x: 400, y: 920, r: 8 } },
+];
+
+/* ------------------------------------------------------------------ */
 /*  Component                                                          */
 /* ------------------------------------------------------------------ */
 export default function BeefCutsHeroCentered() {
   const [selectedCut, setSelectedCut] = useState<string | null>(null);
   const [showPanel, setShowPanel] = useState(false);
+  const [assemble, setAssemble] = useState(false); // pieces fly to their place
+  const [settled, setSettled] = useState(false); // crossfade to the full cow
   const detailsRef = useRef<HTMLDivElement | null>(null);
   const sectionRef = useRef<HTMLElement | null>(null);
+
+  // On load: let pieces start off-screen, then trigger the assemble, then settle.
+  useEffect(() => {
+    const raf = requestAnimationFrame(() => setAssemble(true));
+    const t = setTimeout(() => setSettled(true), 1700);
+    return () => {
+      cancelAnimationFrame(raf);
+      clearTimeout(t);
+    };
+  }, []);
 
   const activeCutDetails = selectedCut
     ? CUTS_DETAILS[selectedCut] || {
@@ -138,6 +167,7 @@ export default function BeefCutsHeroCentered() {
 
   return (
     <section
+      id="cuts"
       ref={sectionRef}
       className="w-full relative bg-[#fcfaf6] text-[#2c2623] font-sans antialiased selection:bg-red-200 flex flex-col items-center overflow-hidden"
     >
@@ -150,7 +180,7 @@ export default function BeefCutsHeroCentered() {
           Aberdeen Angus
         </span>
         <h1 className="font-[var(--font-display)] font-light uppercase text-[#2c2623] leading-none tracking-[0.25em] text-[clamp(2rem,5.5vw,4rem)]">
-          The Cuts
+          <VanishText step={120}>The Cuts</VanishText>
         </h1>
       </div>
 
@@ -165,48 +195,80 @@ export default function BeefCutsHeroCentered() {
           draggable={false}
         />
 
-        {/* 3-Column Grid */}
-        <div className="grid md:grid-cols-[140px_1fr_220px] lg:grid-cols-[170px_1fr_260px] items-center gap-4 lg:gap-10">
+        {/* 3-Column Grid — equal side columns keep the cow + circle page-centered */}
+        <div className="grid md:grid-cols-[200px_1fr_200px] lg:grid-cols-[260px_1fr_260px] items-center gap-4 lg:gap-10">
 
-          {/* ── Left Column ── */}
-          <div className="hidden md:flex flex-col items-start gap-10 reveal">
-            <div className="flex flex-col gap-3">
-              {["Mince", "Minute Steak"].map((t) => (
-                <span
-                  key={t}
-                  className="bg-[#635c54] text-white text-[10px] font-bold uppercase tracking-[0.2em] px-5 py-2.5 whitespace-nowrap transition-transform duration-300 hover:-translate-x-1"
-                >
-                  {t}
-                </span>
-              ))}
-            </div>
-            <svg
-              className="w-10 h-20 text-[#e52d27] ml-2"
-              viewBox="0 0 50 100"
-              fill="none"
-              aria-hidden="true"
-            >
-              <path d="M38 10 L12 50 L38 90" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-            </svg>
-          </div>
+          {/* ── Left Column (spacer — keeps the cow centered) ── */}
+          <div className="hidden md:block" />
 
           {/* ── Center Column: Diagram ── */}
-          <div className="relative w-full flex items-center justify-center genie">
-            {/* Vertical oval backdrop — starts from the cow body */}
+          <div className="relative w-full flex items-center justify-center">
+            {/* Circular backdrop — centered behind the cow, aligned with the logo */}
             <div
-              className="absolute left-1/2 top-1/2 -translate-x-[52%] -translate-y-[48%] -z-10 rounded-[50%] bg-[#f0ebe3]
-                         w-[280px] h-[380px] sm:w-[380px] sm:h-[520px] lg:w-[460px] lg:h-[600px]"
+              className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 -z-10 aspect-square w-[320px] rounded-full bg-[#f0ebe3]
+                         sm:w-[460px] lg:w-[560px]"
               style={{ transition: "all 0.6s cubic-bezier(.4,0,.2,1)" }}
             />
 
             {/* Cow diagram */}
             <div className="relative w-full max-w-[600px] aspect-[1017/619] z-10">
-              <img
-                src="/images/2.png"
-                alt="Beef primal cuts diagram"
-                className="absolute inset-0 w-full h-full object-contain mix-blend-multiply select-none pointer-events-none"
-                draggable={false}
-              />
+              {/* Assembling slices + full-cow base (crossfades in once assembled) */}
+              <svg
+                viewBox="0 0 1017 619"
+                className="absolute inset-0 w-full h-full z-10"
+                preserveAspectRatio="xMidYMid meet"
+              >
+                <defs>
+                  {PIECES.map((p) => (
+                    <clipPath key={p.id} id={`clip-${p.id}`} clipPathUnits="userSpaceOnUse">
+                      {p.polys.map((pts, i) => (
+                        <polygon key={i} points={pts} />
+                      ))}
+                    </clipPath>
+                  ))}
+                </defs>
+
+                {/* full cow — covers head & legs, fades in as pieces settle */}
+                <image
+                  href="/images/2.png"
+                  width="1017"
+                  height="619"
+                  style={{
+                    mixBlendMode: "multiply",
+                    opacity: settled ? 1 : 0,
+                    transition: "opacity 0.6s ease",
+                  }}
+                />
+
+                {/* flying primal slices */}
+                {PIECES.map((p, i) => {
+                  const delay = i * 0.08;
+                  return (
+                    <image
+                      key={p.id}
+                      href="/images/2.png"
+                      width="1017"
+                      height="619"
+                      clipPath={`url(#clip-${p.id})`}
+                      style={{
+                        mixBlendMode: "multiply",
+                        pointerEvents: "none",
+                        transformBox: "fill-box",
+                        transformOrigin: "center",
+                        transform: assemble
+                          ? "translate(0px,0px) rotate(0deg)"
+                          : `translate(${p.from.x}px,${p.from.y}px) rotate(${p.from.r}deg)`,
+                        opacity: settled ? 0 : assemble ? 1 : 0,
+                        transition: settled
+                          ? "opacity 0.5s ease"
+                          : `transform 0.95s cubic-bezier(.2,.75,.25,1) ${delay}s, opacity 0.45s ease ${delay}s`,
+                      }}
+                    />
+                  );
+                })}
+              </svg>
+
+              {/* Interactive overlay — hover / click primals */}
               <svg
                 viewBox="0 0 1017 619"
                 className="absolute inset-0 w-full h-full z-20"
