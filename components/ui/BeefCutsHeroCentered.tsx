@@ -186,6 +186,16 @@ export default function BeefCutsHeroCentered() {
 
       {/* ─── Main Stage ─── */}
       <div className="relative w-full max-w-7xl mx-auto px-6 z-10">
+        {/* Left-side title */}
+        <div
+          aria-hidden="true"
+          className="reveal absolute -left-10 top-1/2 -translate-y-1/2 z-0 hidden lg:flex flex-col items-start text-left select-none pointer-events-none max-w-[26rem] pr-10"
+        >
+          <h2 className="font-[var(--font-display)] font-semibold uppercase tracking-[0.04em] leading-[1.15] text-[#2c2623]/30 text-[clamp(1.75rem,2.8vw,3rem)]">
+            A <span className="text-[#e52d27]/50">Global</span> Leader<br />In Beef Production
+          </h2>
+        </div>
+
         {/* Decorative cleaver — far top-right */}
         <img
           src="/images/cleaver.png"
