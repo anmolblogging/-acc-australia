@@ -1,79 +1,13 @@
 "use client";
 import React, { useState, useRef, useEffect, useCallback } from "react";
+import Link from "next/link";
 import { X } from "lucide-react";
 import VanishText from "./VanishText";
+import { PRIMALS, steakSlug } from "@/lib/cuts";
 
-/* ------------------------------------------------------------------ */
-/*  Data                                                               */
-/* ------------------------------------------------------------------ */
-const CUTS_DETAILS: Record<string, { title: string; items: { name: string; sub: string; img: string }[] }> = {
-  chuck: {
-    title: "CHUCK CUTS",
-    items: [
-      { name: "COWBOY STEAK", sub: "(Bone-in Ribeye)", img: "/images/ribeye.jpg" },
-      { name: "RUMP ROAST", sub: "(Bottom Half)", img: "/images/steak-board.jpg" },
-      { name: "NEW YORK STRIP", sub: "(Strip Loin)", img: "/images/steak-sliced.jpg" },
-      { name: "PORTERHOUSE", sub: "(Short Loin)", img: "/images/steak-small.jpg" },
-      { name: "FILET MIGNON", sub: "(Tenderloin)", img: "/images/ribeye.jpg" },
-      { name: "FLANKEN RIBS", sub: "(Short Ribs)", img: "/images/steak-board.jpg" },
-      { name: "TOMAHAWK", sub: "(Long Bone Ribeye)", img: "/images/steak-sliced.jpg" },
-    ],
-  },
-  rib: {
-    title: "RIB CUTS",
-    items: [
-      { name: "RIBEYE STEAK", sub: "(Prime Rib)", img: "/images/ribeye.jpg" },
-      { name: "BACK RIBS", sub: "(Beef Ribs)", img: "/images/steak-board.jpg" },
-    ],
-  },
-  short_loin: {
-    title: "SHORT LOIN CUTS",
-    items: [
-      { name: "PORTERHOUSE", sub: "(Thick Cut)", img: "/images/steak-small.jpg" },
-      { name: "T-BONE", sub: "(Classic Cut)", img: "/images/steak-board.jpg" },
-    ],
-  },
-  sirloin: {
-    title: "SIRLOIN CUTS",
-    items: [
-      { name: "TOP SIRLOIN", sub: "(Lean Steak)", img: "/images/steak-sliced.jpg" },
-      { name: "TRI-TIP", sub: "(Roast)", img: "/images/ribeye.jpg" },
-    ],
-  },
-  round: {
-    title: "ROUND CUTS",
-    items: [
-      { name: "EYE OF ROUND", sub: "(Roast)", img: "/images/steak-board.jpg" },
-      { name: "BOTTOM ROUND", sub: "(Roast)", img: "/images/steak-small.jpg" },
-    ],
-  },
-  brisket: {
-    title: "BRISKET",
-    items: [
-      { name: "BRISKET FLAT", sub: "(Lean)", img: "/images/ribeye.jpg" },
-      { name: "BRISKET POINT", sub: "(Fatty)", img: "/images/steak-sliced.jpg" },
-    ],
-  },
-  plate: {
-    title: "SHORT PLATE",
-    items: [
-      { name: "SKIRT STEAK", sub: "(Fajita Cut)", img: "/images/steak-sliced.jpg" },
-      { name: "SHORT RIBS", sub: "(Braising)", img: "/images/steak-board.jpg" },
-    ],
-  },
-  flank: {
-    title: "FLANK CUTS",
-    items: [
-      { name: "FLANK STEAK", sub: "(Grilling Cut)", img: "/images/ribeye.jpg" },
-    ],
-  },
-  shank: {
-    title: "SHANK",
-    items: [
-      { name: "BEEF SHANK", sub: "(Osso Buco)", img: "/images/steak-small.jpg" },
-    ],
-  },
-};
+/* Cut data (primals + retail steaks) lives in lib/cuts.ts so the detail
+   pages at /cuts/[slug] share exactly the same source. */
+const CUTS_DETAILS = PRIMALS;
 
 /* ------------------------------------------------------------------ */
 /*  Assembly pieces — each primal region is a clipped slice of the     */
@@ -96,9 +30,13 @@ const PIECES: { id: string; polys: string[]; from: { x: number; y: number; r: nu
 /* ------------------------------------------------------------------ */
 export default function BeefCutsHeroCentered() {
   const [selectedCut, setSelectedCut] = useState<string | null>(null);
+  // Mirrors selectedCut but lingers through the close animation so the panel
+  // content stays mounted while it collapses (instead of vanishing instantly).
+  const [panelCut, setPanelCut] = useState<string | null>(null);
   const [showPanel, setShowPanel] = useState(false);
   const [assemble, setAssemble] = useState(false); // pieces fly to their place
   const [settled, setSettled] = useState(false); // crossfade to the full cow
+  const [blinkId, setBlinkId] = useState<string | null>(null); // self-running hover tour
   const detailsRef = useRef<HTMLDivElement | null>(null);
   const sectionRef = useRef<HTMLElement | null>(null);
 
@@ -112,26 +50,52 @@ export default function BeefCutsHeroCentered() {
     };
   }, []);
 
-  const activeCutDetails = selectedCut
-    ? CUTS_DETAILS[selectedCut] || {
-        title: `${selectedCut.toUpperCase().replace("_", " ")} CUTS`,
-        items: [
-          { name: "PREMIUM STEAK", sub: "(Prime Cut)", img: "/images/ribeye.jpg" },
-          { name: "ALTERNATIVE CUT", sub: "(Value Cut)", img: "/images/steak-small.jpg" },
-        ],
-      }
-    : null;
+  // Once the cow has settled, run a one-time "tour": highlight each primal cut
+  // one after another (chuck → rib → short loin → …) so it blinks like a hover.
+  useEffect(() => {
+    if (!settled) return;
+    const ids = PIECES.map((p) => p.id);
+    const ON = 480; // how long each part stays lit
+    const GAP = 140; // pause between parts
+    const STEP = ON + GAP;
+    const timers: ReturnType<typeof setTimeout>[] = [];
+    ids.forEach((id, i) => {
+      timers.push(setTimeout(() => setBlinkId(id), 500 + i * STEP));
+      timers.push(setTimeout(() => setBlinkId((cur) => (cur === id ? null : cur)), 500 + i * STEP + ON));
+    });
+    return () => timers.forEach(clearTimeout);
+  }, [settled]);
+
+  const detailsFor = (cut: string | null) =>
+    cut
+      ? CUTS_DETAILS[cut] || {
+          title: `${cut.toUpperCase().replace("_", " ")} CUTS`,
+          items: [
+            { name: "PREMIUM STEAK", sub: "(Prime Cut)", img: "/images/ribeye.jpg" },
+            { name: "ALTERNATIVE CUT", sub: "(Value Cut)", img: "/images/steak-small.jpg" },
+          ],
+        }
+      : null;
+
+  // Right-column indicator follows the live selection (clears instantly on close);
+  // the panel renders from panelCut so its content survives the collapse animation.
+  const activeCutDetails = detailsFor(selectedCut);
+  const panelDetails = detailsFor(panelCut);
 
   // Animate in panel & scroll to it
   useEffect(() => {
     if (selectedCut) {
+      setPanelCut(selectedCut);
       setShowPanel(true);
       const t = setTimeout(() => {
         detailsRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
       }, 150);
       return () => clearTimeout(t);
     } else {
+      // Reverse the open: collapse first, then unmount the content once it's done.
       setShowPanel(false);
+      const t = setTimeout(() => setPanelCut(null), 650);
+      return () => clearTimeout(t);
     }
   }, [selectedCut]);
 
@@ -155,10 +119,13 @@ export default function BeefCutsHeroCentered() {
     return () => io.disconnect();
   }, []);
 
-  const getPathClass = (id: string) =>
-    selectedCut === id
-      ? "fill-[#e52d27]/90 stroke-white stroke-[2] cursor-pointer transition-all duration-300"
-      : "fill-transparent stroke-white/70 hover:fill-[#e52d27]/60 hover:stroke-white hover:stroke-[2] cursor-pointer transition-all duration-300";
+  const getPathClass = (id: string) => {
+    if (selectedCut === id)
+      return "fill-[#e52d27]/90 stroke-white stroke-[2] cursor-pointer transition-all duration-300";
+    if (blinkId === id)
+      return "fill-[#e52d27]/60 stroke-white stroke-[2] cursor-pointer transition-all duration-300";
+    return "fill-transparent stroke-white/70 hover:fill-[#e52d27]/60 hover:stroke-white hover:stroke-[2] cursor-pointer transition-all duration-300";
+  };
 
   const handleCutClick = useCallback(
     (id: string) => setSelectedCut((prev) => (prev === id ? null : id)),
@@ -169,19 +136,19 @@ export default function BeefCutsHeroCentered() {
     <section
       id="cuts"
       ref={sectionRef}
-      className="w-full relative bg-[#fcfaf6] text-[#2c2623] font-sans antialiased selection:bg-red-200 flex flex-col items-center overflow-hidden"
+      className="w-full relative text-[#2c2623] font-sans antialiased selection:bg-red-200 flex flex-col items-center overflow-hidden"
     >
+      {/* Pasture background now lives in the page-level wrapper so it can run
+          continuously from the hero down to the marquee. */}
+
       {/* ─── Top Spacer for Fixed Navbar ─── */}
       <div className="h-28 lg:h-32 w-full" />
 
       {/* ─── Title Block ─── */}
       <div className="reveal max-w-5xl mx-auto px-6 w-full flex flex-col items-center text-center z-20 mb-10 lg:mb-14">
         <span className="text-[10px] sm:text-[11px] font-bold uppercase tracking-[0.5em] text-[#b9ad9c] mb-5">
-          Aberdeen Angus
+          100% Australian Beef
         </span>
-        <h1 className="font-[var(--font-display)] font-light uppercase text-[#2c2623] leading-none tracking-[0.25em] text-[clamp(2rem,5.5vw,4rem)]">
-          <VanishText step={120}>The Cuts</VanishText>
-        </h1>
       </div>
 
       {/* ─── Main Stage ─── */}
@@ -191,8 +158,8 @@ export default function BeefCutsHeroCentered() {
           aria-hidden="true"
           className="reveal absolute -left-10 top-1/2 -translate-y-1/2 z-0 hidden lg:flex flex-col items-start text-left select-none pointer-events-none max-w-[26rem] pr-10"
         >
-          <h2 className="font-[var(--font-display)] font-semibold uppercase tracking-[0.04em] leading-[1.15] text-[#2c2623]/30 text-[clamp(1.75rem,2.8vw,3rem)]">
-            A <span className="text-[#e52d27]/50">Global</span> Leader<br />In Beef Production
+          <h2 className="font-[var(--font-display)] font-semibold uppercase tracking-[0.04em] leading-[1.15] text-[#2c2623]/70 text-[clamp(1.75rem,2.8vw,3rem)] [text-shadow:0_1px_2px_rgba(252,250,246,0.6)]">
+            A <span className="text-[#e52d27]">Global</span> Leader<br />In Beef Production
           </h2>
         </div>
 
@@ -388,17 +355,17 @@ export default function BeefCutsHeroCentered() {
           overflow: "hidden",
         }}
       >
-        {activeCutDetails && (
+        {panelDetails && (
           <div className="max-w-6xl mx-auto px-6 pt-16 pb-20">
             <div className="w-full bg-[#1c1a19] text-white p-8 sm:p-10 lg:p-12 shadow-2xl rounded-lg">
               {/* Panel Header */}
               <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 border-b border-white/10 pb-6 mb-8">
                 <div>
                   <span className="text-[#e52d27] text-[10px] font-bold tracking-[0.25em] uppercase block mb-1.5">
-                    Retail Steaks
+                    Retail Cuts
                   </span>
                   <h3 className="text-xl sm:text-2xl md:text-3xl font-[var(--font-display)] font-light tracking-[0.18em] uppercase text-white">
-                    {activeCutDetails.title}
+                    {panelDetails.title}
                   </h3>
                 </div>
                 <button
@@ -414,10 +381,11 @@ export default function BeefCutsHeroCentered() {
               {/* Steaks Grid */}
               <div className="w-full overflow-x-auto pb-2 custom-scrollbar">
                 <div className="flex sm:grid sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-x-6 gap-y-10 min-w-max sm:min-w-0">
-                  {activeCutDetails.items.map((item, idx) => (
-                    <div
+                  {panelDetails.items.map((item, idx) => (
+                    <Link
                       key={idx}
-                      className="flex flex-col items-center text-center group w-28 sm:w-auto"
+                      href={`/cuts/${steakSlug(panelCut ?? "", item.name)}`}
+                      className="flex flex-col items-center text-center group w-28 sm:w-auto cursor-pointer"
                       style={{
                         opacity: showPanel ? 1 : 0,
                         transform: showPanel ? "translateY(0)" : "translateY(20px)",
@@ -432,13 +400,16 @@ export default function BeefCutsHeroCentered() {
                           onError={(e) => { e.currentTarget.style.display = "none"; }}
                         />
                       </div>
-                      <span className="text-[10px] sm:text-[11px] font-bold tracking-[0.15em] text-neutral-200 uppercase line-clamp-2">
+                      <span className="text-[10px] sm:text-[11px] font-bold tracking-[0.15em] text-neutral-200 uppercase line-clamp-2 group-hover:text-white transition-colors">
                         {item.name}
                       </span>
                       <span className="text-[9px] sm:text-[10px] text-neutral-500 mt-0.5 font-[var(--font-serif)] italic">
                         {item.sub}
                       </span>
-                    </div>
+                      <span className="mt-2 text-[8px] font-bold uppercase tracking-[0.2em] text-[#e52d27] opacity-0 group-hover:opacity-100 transition-opacity">
+                        View cut →
+                      </span>
+                    </Link>
                   ))}
                 </div>
               </div>

@@ -23,6 +23,11 @@ const roboto = Roboto({
 export const metadata: Metadata = {
   title: "ACC — Marbled Beef of the Highest Quality",
   description: "ACC — premium marbled beef raised with care in ecologically clean regions.",
+  icons: {
+    icon: "/images/acc-logo.svg",
+    shortcut: "/images/acc-logo.svg",
+    apple: "/images/acc-logo.svg",
+  },
   openGraph: {
     title: "ACC — Marbled Beef",
     description: "ACC — premium marbled beef of the highest quality.",
