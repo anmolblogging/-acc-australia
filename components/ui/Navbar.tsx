@@ -33,7 +33,7 @@ export default function Navbar() {
         {/* LEFT NAV */}
         <nav className="hidden md:flex items-center justify-end gap-8 text-[11px] uppercase tracking-[0.22em] text-[#2c2623] font-bold border-b border-gray-200/80 pb-2">
           {leftLinks.map((l) => (
-            <Link key={l.href} href={l.href} className="hover:text-[#e52d27] transition-colors whitespace-nowrap">
+            <Link key={l.href} href={l.href} className="hover:text-[#191851] transition-colors whitespace-nowrap">
               {l.label}
             </Link>
           ))}
@@ -51,13 +51,13 @@ export default function Navbar() {
         {/* RIGHT NAV */}
         <nav className="hidden md:flex items-center justify-start gap-8 text-[11px] uppercase tracking-[0.22em] text-[#2c2623] font-bold border-b border-gray-200/80 pb-2">
           {rightLinks.map((l) => (
-            <Link key={l.href} href={l.href} className="hover:text-[#e52d27] transition-colors whitespace-nowrap">
+            <Link key={l.href} href={l.href} className="hover:text-[#191851] transition-colors whitespace-nowrap">
               {l.label}
             </Link>
           ))}
           <a
             href="mailto:enquiries@accbeef.net.au"
-            className="bg-[#e52d27] text-white px-2.5 py-1 tracking-[0.18em] transition-opacity hover:opacity-85 whitespace-nowrap"
+            className="bg-[#191851] text-white px-2.5 py-1 tracking-[0.18em] transition-opacity hover:opacity-85 whitespace-nowrap"
           >
             Enquire
           </a>
@@ -86,7 +86,7 @@ export default function Navbar() {
       >
         <nav className="mx-auto max-w-6xl px-6 py-4 flex flex-col gap-3 text-[12px] uppercase tracking-[0.22em] font-bold text-[#2c2623]">
           {allLinks.map((l) => (
-            <Link key={l.href} href={l.href} onClick={() => setOpen(false)} className="py-2 hover:text-[#e52d27] transition-colors border-b border-gray-50">
+            <Link key={l.href} href={l.href} onClick={() => setOpen(false)} className="py-2 hover:text-[#191851] transition-colors border-b border-gray-50">
               {l.label}
             </Link>
           ))}

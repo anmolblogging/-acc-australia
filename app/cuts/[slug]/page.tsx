@@ -2,10 +2,6 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import {
-  Flame,
-  UtensilsCrossed,
-  CookingPot,
-  Soup,
   Beef,
   Hash,
   Award,
@@ -24,16 +20,7 @@ import {
   SUPPLY_CHANNELS,
   relatedCuts,
   steakSlug,
-  COOK_LABELS,
-  type CookMethod,
 } from "@/lib/cuts";
-
-const METHOD_ICON: Record<CookMethod, typeof Flame> = {
-  grill: Flame,
-  pan: UtensilsCrossed,
-  roast: CookingPot,
-  braise: Soup,
-};
 
 const SPEC_ICON: Record<string, typeof Beef> = {
   Primal: Beef,
@@ -81,7 +68,7 @@ export default async function CutDetailPage({
         <div className="flex flex-col items-start">
           <Link
             href="/#cuts"
-            className="mb-4 text-[11px] font-bold uppercase tracking-[0.22em] text-[#2c2623]/55 transition-colors hover:text-[#e52d27]"
+            className="mb-4 text-[11px] font-bold uppercase tracking-[0.22em] text-[#2c2623]/55 transition-colors hover:text-[#191851]"
           >
             ← The Cuts
           </Link>
@@ -104,23 +91,6 @@ export default async function CutDetailPage({
             </div>
           </div>
 
-          {/* recommended cooking — an attribute of the cut, not a recipe */}
-          <div className="relative z-10 mt-8 flex flex-wrap items-center justify-center gap-x-10 gap-y-5 lg:absolute lg:right-[-2.5rem] lg:top-1/2 lg:mt-0 lg:max-w-[12rem] lg:-translate-y-1/2 lg:flex-col lg:items-start lg:gap-7">
-            <span className="hidden text-[10px] font-bold uppercase tracking-[0.3em] text-[#b9ad9c] lg:block">
-              Best cooked by
-            </span>
-            {steak.methods.map((m) => {
-              const Icon = METHOD_ICON[m];
-              return (
-                <div key={m} className="flex items-center gap-3">
-                  <Icon className="h-5 w-5 shrink-0 text-[#2c2623]/80" strokeWidth={1.6} />
-                  <span className="font-[var(--font-serif)] text-[15px] italic text-[#2c2623] underline decoration-[#e52d27] decoration-2 underline-offset-4">
-                    {COOK_LABELS[m]}
-                  </span>
-                </div>
-              );
-            })}
-          </div>
         </div>
 
         {/* ── Cut identity + product specification ── */}
@@ -129,7 +99,7 @@ export default async function CutDetailPage({
           <div>
             <div className="mb-6 flex items-center gap-3">
               <span className="h-px w-16 border-t-2 border-dashed border-[#2c2623]/40" />
-              <span className="text-[10px] font-bold uppercase tracking-[0.3em] text-[#e52d27]">Retail Cut</span>
+              <span className="text-[10px] font-bold uppercase tracking-[0.3em] text-[#191851]">Retail Cut</span>
             </div>
 
             <h1 className="font-[var(--font-display)] text-3xl font-bold uppercase leading-tight tracking-[0.04em] text-[#2c2623] sm:text-4xl lg:text-5xl">
@@ -148,7 +118,7 @@ export default async function CutDetailPage({
                 return (
                   <div key={s.label} className="flex flex-col gap-1.5">
                     <dt className="flex items-center gap-1.5 text-[9px] font-bold uppercase tracking-[0.2em] text-[#2c2623]/45">
-                      <Icon className="h-3.5 w-3.5 text-[#e52d27]" strokeWidth={1.8} />
+                      <Icon className="h-3.5 w-3.5 text-[#191851]" strokeWidth={1.8} />
                       {s.label}
                     </dt>
                     <dd className="text-[13px] font-semibold text-[#2c2623]">{s.value}</dd>
@@ -161,13 +131,13 @@ export default async function CutDetailPage({
             <div className="mt-9 flex flex-wrap items-center gap-4">
               <a
                 href="mailto:enquiries@accbeef.net.au"
-                className="bg-[#e52d27] px-6 py-3 text-[11px] font-bold uppercase tracking-[0.22em] text-white transition-opacity hover:opacity-85"
+                className="bg-[#191851] px-6 py-3 text-[11px] font-bold uppercase tracking-[0.22em] text-white transition-opacity hover:opacity-85"
               >
                 Enquire about this cut
               </a>
               <a
                 href="mailto:enquiries@accbeef.net.au?subject=Spec%20sheet%20request"
-                className="border-2 border-[#e52d27] px-6 py-3 text-[11px] font-bold uppercase tracking-[0.22em] text-[#e52d27] transition-colors hover:bg-[#e52d27] hover:text-white"
+                className="border-2 border-[#191851] px-6 py-3 text-[11px] font-bold uppercase tracking-[0.22em] text-[#191851] transition-colors hover:bg-[#191851] hover:text-white"
               >
                 Request spec sheet
               </a>
@@ -176,7 +146,7 @@ export default async function CutDetailPage({
 
           {/* RIGHT — product specification card */}
           <div className="rounded-2xl bg-white/60 p-7 ring-1 ring-[#2c2623]/10 sm:p-8 lg:p-9">
-            <span className="text-[10px] font-bold uppercase tracking-[0.3em] text-[#e52d27]">
+            <span className="text-[10px] font-bold uppercase tracking-[0.3em] text-[#191851]">
               Product Specification
             </span>
 
@@ -207,7 +177,7 @@ export default async function CutDetailPage({
               <ul className="mt-3 grid gap-x-8 gap-y-2.5 sm:grid-cols-2">
                 {PACKAGING.map((p) => (
                   <li key={p} className="flex items-start gap-2.5 text-[14px] text-[#2c2623]/80">
-                    <span className="mt-1.5 h-1.5 w-1.5 shrink-0 rotate-45 bg-[#e52d27]" />
+                    <span className="mt-1.5 h-1.5 w-1.5 shrink-0 rotate-45 bg-[#191851]" />
                     {p}
                   </li>
                 ))}
@@ -253,7 +223,7 @@ export default async function CutDetailPage({
                   />
                 </div>
                 <div>
-                  <h4 className="font-[var(--font-display)] text-sm font-bold uppercase tracking-[0.08em] text-[#2c2623] transition-colors group-hover:text-[#e52d27]">
+                  <h4 className="font-[var(--font-display)] text-sm font-bold uppercase tracking-[0.08em] text-[#2c2623] transition-colors group-hover:text-[#191851]">
                     {s.name}
                   </h4>
                   <p className="mt-1 font-[var(--font-serif)] text-[12px] italic text-[#2c2623]/55">{s.sub}</p>

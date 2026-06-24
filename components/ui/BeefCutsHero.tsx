@@ -21,6 +21,7 @@ const CUTS_DETAILS: Record<string, { title: string; items: { name: string; sub: 
     items: [
       { name: "RIBEYE STEAK", sub: "(Prime Rib)", img: "/images/ribeye.jpg" },
       { name: "BACK RIBS", sub: "(Beef Ribs)", img: "/images/steak-board.jpg" },
+      { name: "BEEF MINCE", sub: "(Trim)", img: "/images/beef-mince.jpg" },
     ],
   },
   short_loin: {
@@ -85,11 +86,11 @@ export default function BeefCutsHero() {
       }
     : null;
 
-  // Solid red fill with white borders on hover/active to match Behance styling
+  // Solid navy fill with white borders on hover/active to match Behance styling
   const getPathClass = (id: string) => {
     return selectedCut === id
-      ? "fill-[#e52d27]/90 stroke-white stroke-[2] cursor-pointer transition-all duration-300"
-      : "fill-transparent stroke-white hover:fill-[#e52d27]/70 hover:stroke-white hover:stroke-[2] cursor-pointer transition-all duration-300";
+      ? "fill-[#191851]/90 stroke-white stroke-[2] cursor-pointer transition-all duration-300"
+      : "fill-transparent stroke-white hover:fill-[#191851]/70 hover:stroke-white hover:stroke-[2] cursor-pointer transition-all duration-300";
   };
 
   const handleCutClick = (id: string) => {
@@ -97,7 +98,7 @@ export default function BeefCutsHero() {
   };
 
   return (
-    <section className="w-full relative bg-[#fcfaf6] text-[#2c2623] font-sans antialiased selection:bg-red-200 min-h-screen flex flex-col justify-center pt-24 pb-16">
+    <section className="w-full relative bg-[#fcfaf6] text-[#2c2623] font-sans antialiased selection:bg-blue-200 min-h-screen flex flex-col justify-center pt-24 pb-16">
       
       {/* ============================================================ */}
       {/* TOP SECTION: Left/Right Split Layout                         */}
@@ -131,7 +132,7 @@ export default function BeefCutsHero() {
 
           {/* Button */}
           <div className="pt-4">
-            <a href="#about" className="group relative inline-flex items-center overflow-hidden bg-[#2c2623] px-8 py-4 text-[11px] font-bold uppercase tracking-[0.2em] text-[#fcfaf6] transition-colors hover:bg-[#e52d27]">
+            <a href="#about" className="group relative inline-flex items-center overflow-hidden bg-[#2c2623] px-8 py-4 text-[11px] font-bold uppercase tracking-[0.2em] text-[#fcfaf6] transition-colors hover:bg-[#191851]">
               <span className="relative z-10">Discover Our Heritage</span>
             </a>
           </div>
@@ -175,7 +176,7 @@ export default function BeefCutsHero() {
           {!selectedCut && (
             <div className="mt-8 bg-white border border-[#2c2623]/10 shadow-sm rounded-xl p-5 max-w-md text-center animate-in fade-in duration-500 z-20">
               <p className="text-sm text-[#8a8077] font-[var(--font-serif)] italic leading-relaxed">
-                <strong className="not-italic text-[#e52d27] font-sans font-bold uppercase tracking-widest text-[11px] block mb-2">
+                <strong className="not-italic text-[#191851] font-sans font-bold uppercase tracking-widest text-[11px] block mb-2">
                   Select a primal cut
                 </strong> 
                 from the diagram to explore its retail steaks. From robust chuck to tender short loin, discover the anatomy of premium flavor.
@@ -197,7 +198,7 @@ export default function BeefCutsHero() {
             {/* Header of the Details Panel */}
             <div className="flex flex-col md:flex-row items-start md:items-end justify-between gap-6 border-b border-neutral-800 pb-6 mb-10">
               <div className="flex flex-col">
-                <span className="text-[#e52d27] text-[11px] font-bold tracking-[0.2em] uppercase mb-2 flex items-center gap-2">
+                <span className="text-[#fff10b] text-[11px] font-bold tracking-[0.2em] uppercase mb-2 flex items-center gap-2">
                   Retail Steaks
                 </span>
                 <h3 className="text-2xl md:text-3xl font-[var(--font-display)] font-light tracking-[0.15em] uppercase text-white">
@@ -223,7 +224,7 @@ export default function BeefCutsHero() {
                     <div key={idx} className="flex flex-col items-center text-center group w-28 sm:w-auto">
                       
                       {/* Dark theme meat images mapped to rounded-full */}
-                      <div className="w-20 h-20 sm:w-28 sm:h-28 rounded-full overflow-hidden bg-neutral-800 mb-4 shadow-inner border border-neutral-700 group-hover:border-[#e52d27] transition-all duration-300">
+                      <div className="w-20 h-20 sm:w-28 sm:h-28 rounded-full overflow-hidden bg-neutral-800 mb-4 shadow-inner border border-neutral-700 group-hover:border-[#fff10b] transition-all duration-300">
                         <img
                           src={item.img}
                           alt={item.name}

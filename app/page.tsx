@@ -49,7 +49,7 @@ export default function Home() {
       {/* ========================================= */}
       {/* PRESENTATION BANNER FOR OPTION 2          */}
       {/* ========================================= */}
-      {/* <div className="w-full bg-[#e52d27] text-white text-center py-2 text-[10px] tracking-[0.3em] uppercase font-bold relative z-20">
+      {/* <div className="w-full bg-[#191851] text-white text-center py-2 text-[10px] tracking-[0.3em] uppercase font-bold relative z-20">
         Presentation: Hero Option 2 (Centered Layout)
       </div> */}
 
@@ -62,6 +62,16 @@ export default function Home() {
             alt=""
             draggable={false}
             className="absolute inset-x-0 bottom-0 w-full h-full object-cover object-bottom opacity-80"
+          />
+          {/* warm golden wash — echoes the yellow in the ACC logo */}
+          <div
+            aria-hidden="true"
+            className="absolute inset-0 mix-blend-soft-light bg-gradient-to-br from-[#fff10b]/40 via-[#ffe23a]/25 to-[#f5c518]/35"
+          />
+          {/* extra gold tint, multiplied for a sun-warmed paddock tone */}
+          <div
+            aria-hidden="true"
+            className="absolute inset-0 mix-blend-multiply bg-gradient-to-b from-transparent via-[#fde68a]/15 to-[#fbbf24]/15"
           />
           {/* Fade the top into the cream so the nav + title stay clean */}
           <div className="absolute inset-x-0 top-0 h-[26rem] bg-gradient-to-b from-[#fcfaf6] via-[#fcfaf6]/60 to-transparent" />
@@ -80,23 +90,23 @@ export default function Home() {
         <div className="reveal relative">
           {/* dark banner */}
           <div className="relative overflow-hidden rounded-xl bg-[#2c2623] text-[#fcfaf6] px-8 py-12 sm:px-14 sm:py-14 shadow-[0_24px_50px_-24px_rgba(28,26,25,0.5)] ring-1 ring-white/[0.06]">
-            {/* warm red glow for depth */}
+            {/* warm navy glow for depth */}
             <div
               className="pointer-events-none absolute inset-0"
-              style={{ background: "radial-gradient(circle at 0% 50%, rgba(229,45,39,0.12), transparent 60%)" }}
+              style={{ background: "radial-gradient(circle at 0% 50%, rgba(25,24,81,0.12), transparent 60%)" }}
             />
             <div className="relative flex flex-col items-center text-center">
               {/* top — eyebrow + quote, centered */}
-              <span className="flex items-center gap-3 text-[11px] font-bold uppercase tracking-[0.3em] text-[#e52d27]">
-                <span className="h-px w-8 bg-[#e52d27]/60" />
+              <span className="flex items-center gap-3 text-[11px] font-bold uppercase tracking-[0.3em] text-[#fff10b]">
+                <span className="h-px w-8 bg-[#fff10b]/60" />
                 The ACC Philosophy
-                <span className="h-px w-8 bg-[#e52d27]/60" />
+                <span className="h-px w-8 bg-[#fff10b]/60" />
               </span>
 
               {/* italic serif quote — ACC's real point of difference */}
               <p className="mt-6 max-w-3xl font-[var(--font-serif)] italic text-2xl leading-snug text-[#fcfaf6] sm:text-[2rem] sm:leading-snug">
                 One supply chain, one standard, from our paddocks to your plate,{" "}
-                <span className="not-italic text-[#e52d27]">every step is ours to control.</span>
+                <span className="not-italic text-[#fff10b]">every step is ours to control.</span>
               </p>
 
               {/* divider */}
@@ -130,19 +140,6 @@ export default function Home() {
       </section>
       </div>
 
-      {/* MARQUEE */}
-      <div className="overflow-hidden border-y border-gray-200 bg-white py-4 relative z-10">
-        <div className="marquee-track flex w-max gap-12 whitespace-nowrap font-[var(--font-display)] text-sm uppercase tracking-[0.4em] text-gray-400">
-          {Array.from({ length: 2 }).map((_, k) => (
-            <div key={k} className="flex gap-12">
-              {["Vertically Integrated", "★", "MSA Graded", "★", "Grain-Finished", "★", "100% Australian", "★", "Family Owned", "★"].map((w, i) => (
-                <span key={i}>{w}</span>
-              ))}
-            </div>
-          ))}
-        </div>
-      </div>
-
       {/* ABOUT THE COMPANY */}
       <section id="about" className="relative mx-auto max-w-6xl px-6 py-20 sm:py-24 z-10 scroll-mt-24">
         <div className="absolute left-0 top-4 font-[var(--font-display)] text-[120px] sm:text-[200px] lg:text-[280px] leading-none tracking-tighter font-bold text-gray-100 pointer-events-none select-none">
@@ -151,13 +148,13 @@ export default function Home() {
         <div className="relative grid items-center gap-10 md:grid-cols-[1fr_1.3fr] lg:gap-16">
           {/* LEFT — about copy */}
           <div className="reveal">
-            <span className="mb-5 flex items-center gap-3 text-[11px] font-bold uppercase tracking-[0.3em] text-[#e52d27]">
-              <span className="h-px w-6 bg-[#e52d27]/60" />
+            <span className="mb-5 flex items-center gap-3 text-[11px] font-bold uppercase tracking-[0.3em] text-[#191851]">
+              <span className="h-px w-6 bg-[#191851]/60" />
               Who We Are
             </span>
             <h3 className="font-[var(--font-display)] text-3xl md:text-4xl font-bold uppercase tracking-wide leading-[1.1] mb-6">
               <VanishText>
-                A Fully <span className="text-[#e52d27]">Integrated</span> Beef Business
+                Australia&apos;s <span className="text-[#191851]">largest</span> family-owned cattle and beef supply chain
               </VanishText>
             </h3>
             <div className="max-w-xl space-y-4 font-[var(--font-serif)] text-[14px] leading-relaxed text-gray-600">
@@ -171,9 +168,9 @@ export default function Home() {
 
             <a
               href="#contact"
-              className="group relative mt-9 inline-flex items-center overflow-hidden border border-[#e52d27] px-7 py-3 text-[11px] font-bold uppercase tracking-widest text-[#e52d27] transition-colors hover:text-white"
+              className="group relative mt-9 inline-flex items-center overflow-hidden border border-[#191851] px-7 py-3 text-[11px] font-bold uppercase tracking-widest text-[#191851] transition-colors hover:text-white"
             >
-              <span className="absolute inset-0 -translate-x-full bg-[#e52d27] transition-transform duration-500 group-hover:translate-x-0" />
+              <span className="absolute inset-0 -translate-x-full bg-[#191851] transition-transform duration-500 group-hover:translate-x-0" />
               <span className="relative">Get in touch</span>
             </a>
           </div>
@@ -201,7 +198,7 @@ export default function Home() {
             </div>
 
             {/* caption badge */}
-            <span className="absolute bottom-3 left-1/2 z-20 -translate-x-1/2 rounded-full bg-[#e52d27] px-4 py-1.5 text-[9px] font-bold uppercase tracking-[0.2em] text-white shadow-lg">
+            <span className="absolute bottom-3 left-1/2 z-20 -translate-x-1/2 rounded-full bg-[#191851] px-4 py-1.5 text-[9px] font-bold uppercase tracking-[0.2em] text-white shadow-lg">
               100% Australian
             </span>
           </div>
@@ -212,7 +209,7 @@ export default function Home() {
           {["Breeding", "Backgrounding", "Lot Feeding", "Processing", "Distribution"].map((step, i) => (
             <div key={step} className="flex shrink-0 items-center gap-3">
               {i > 0 && (
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#e52d27" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round" className="opacity-50">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#191851" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round" className="opacity-50">
                   <path d="M9 6l6 6-6 6" />
                 </svg>
               )}
@@ -237,10 +234,10 @@ export default function Home() {
               aria-hidden
               className="absolute left-1/2 top-1/2 -z-10 h-[300vh] w-screen -translate-x-1/2 bg-[#181310]"
             >
-              {/* soft red glow for depth */}
+              {/* soft navy glow for depth */}
               <div
                 className="absolute inset-x-0 top-0 h-[700px]"
-                style={{ background: "radial-gradient(circle at 75% 12%, rgba(229,45,39,0.12), transparent 55%)" }}
+                style={{ background: "radial-gradient(circle at 75% 12%, rgba(25,24,81,0.12), transparent 55%)" }}
               />
             </div>
             {/* framed image — only this animates in (clean fade-up), band stays steady */}
@@ -310,20 +307,20 @@ export default function Home() {
             </div>
 
             {/* caption badge */}
-            <span className="absolute bottom-3 left-1/2 z-20 -translate-x-1/2 rounded-full bg-[#e52d27] px-4 py-1.5 text-[9px] font-bold uppercase tracking-[0.2em] text-white shadow-lg">
+            <span className="absolute bottom-3 left-1/2 z-20 -translate-x-1/2 rounded-full bg-[#191851] px-4 py-1.5 text-[9px] font-bold uppercase tracking-[0.2em] text-white shadow-lg">
               Grain-Finished
             </span>
           </div>
 
           {/* RIGHT — copy */}
           <div className="reveal">
-            <span className="mb-5 flex items-center gap-3 text-[11px] font-bold uppercase tracking-[0.3em] text-[#e52d27]">
-              <span className="h-px w-6 bg-[#e52d27]/60" />
+            <span className="mb-5 flex items-center gap-3 text-[11px] font-bold uppercase tracking-[0.3em] text-[#191851]">
+              <span className="h-px w-6 bg-[#191851]/60" />
               Feed &amp; Finishing
             </span>
             <h3 className="font-[var(--font-display)] text-3xl md:text-4xl font-bold uppercase tracking-wide leading-[1.1] mb-6">
               <VanishText>
-                Pasture Raised, <span className="text-[#e52d27]">Grain Finished</span>
+                Pasture Raised, <span className="text-[#191851]">Grain Finished</span>
               </VanishText>
             </h3>
             <div className="max-w-xl space-y-4 font-[var(--font-serif)] text-[14px] leading-relaxed text-gray-600">
@@ -340,21 +337,21 @@ export default function Home() {
 
       {/* CONTACTS */}
       <section id="contact" className="relative z-10 overflow-hidden bg-[#2c2623] text-[#fcfaf6] scroll-mt-0">
-        {/* subtle red glow for depth */}
+        {/* subtle navy glow for depth */}
         <div
           className="pointer-events-none absolute inset-0"
-          style={{ background: "radial-gradient(circle at 85% 10%, rgba(229,45,39,0.12), transparent 55%)" }}
+          style={{ background: "radial-gradient(circle at 85% 10%, rgba(25,24,81,0.12), transparent 55%)" }}
         />
         <div className="relative mx-auto grid max-w-6xl items-start gap-14 px-6 py-20 sm:py-24 lg:grid-cols-[1fr_1.05fr] lg:gap-20">
           {/* LEFT — intro + details + socials */}
           <div className="reveal">
-            <span className="mb-5 flex items-center gap-3 text-[11px] font-bold uppercase tracking-[0.3em] text-[#e52d27]">
-              <span className="h-px w-6 bg-[#e52d27]/60" />
+            <span className="mb-5 flex items-center gap-3 text-[11px] font-bold uppercase tracking-[0.3em] text-[#fff10b]">
+              <span className="h-px w-6 bg-[#fff10b]/60" />
               Get in Touch
             </span>
             <h3 className="font-[var(--font-display)] text-3xl md:text-4xl font-bold uppercase leading-[1.1] tracking-wide">
               <VanishText>
-                Let&apos;s Work <span className="text-[#e52d27]">Together</span>
+                Let&apos;s Work <span className="text-[#fff10b]">Together</span>
               </VanishText>
             </h3>
             <p className="mt-5 max-w-md font-[var(--font-serif)] text-[14px] leading-relaxed text-[#fcfaf6]/65">
@@ -369,12 +366,12 @@ export default function Home() {
                 { label: "Email", value: "enquiries@accbeef.net.au", href: "mailto:enquiries@accbeef.net.au", icon: <MailIcon /> },
                 { label: "Business Hours", value: "Mon–Fri · 8:00–17:00 AEST", icon: <ClockIcon /> },
               ].map((c) => (
-                <div key={c.label} className="flex items-start gap-4 rounded-xl border border-white/10 bg-white/[0.03] px-5 py-4 transition-colors hover:border-[#e52d27]/40">
-                  <span className="mt-0.5 shrink-0 text-[#e52d27]">{c.icon}</span>
+                <div key={c.label} className="flex items-start gap-4 rounded-xl border border-white/10 bg-white/[0.03] px-5 py-4 transition-colors hover:border-[#fff10b]/40">
+                  <span className="mt-0.5 shrink-0 text-[#fff10b]">{c.icon}</span>
                   <div className="min-w-0">
                     <div className="text-[10px] font-bold uppercase tracking-[0.25em] text-[#fcfaf6]/45">{c.label}</div>
                     {c.href ? (
-                      <a href={c.href} className="mt-1 block whitespace-pre-line font-[var(--font-display)] text-base leading-snug text-[#fcfaf6] transition-colors hover:text-[#e52d27]">
+                      <a href={c.href} className="mt-1 block whitespace-pre-line font-[var(--font-display)] text-base leading-snug text-[#fcfaf6] transition-colors hover:text-[#fff10b]">
                         {c.value}
                       </a>
                     ) : (
@@ -400,7 +397,7 @@ export default function Home() {
                     key={s.label}
                     href={s.href}
                     aria-label={s.label}
-                    className="grid h-9 w-9 place-items-center rounded-full border border-white/15 text-[#fcfaf6]/70 transition-colors hover:border-[#e52d27] hover:bg-[#e52d27] hover:text-white"
+                    className="grid h-9 w-9 place-items-center rounded-full border border-white/15 text-[#fcfaf6]/70 transition-colors hover:border-[#fff10b] hover:bg-[#fff10b] hover:text-[#1c1a19]"
                   >
                     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round">
                       {s.path}
@@ -418,40 +415,15 @@ export default function Home() {
         </div>
       </section>
 
-      {/* FOOTER */}
-      <footer className="relative z-10 bg-[#1c1a19] text-[#fcfaf6]/70">
-        <div className="mx-auto max-w-6xl px-6 py-10">
-          <div className="flex flex-col items-center gap-6 md:flex-row md:justify-between">
-            {/* Logo */}
-            <a href="#" className="flex flex-col items-center leading-none md:items-start">
-              <span className="pl-[0.4em] font-[var(--font-display)] text-xl font-bold tracking-[0.4em] text-[#fcfaf6]">A C C</span>
-              <span className="mt-1 font-[var(--font-serif)] text-[10px] italic tracking-wide text-[#fcfaf6]/40">· Australian Country Choice ·</span>
-            </a>
-
-            {/* Footer nav */}
-            <nav className="flex flex-wrap items-center justify-center gap-x-6 gap-y-2 text-[11px] font-bold uppercase tracking-[0.18em]">
-              <a href="#cuts" className="transition-colors hover:text-[#e52d27]">The Cuts</a>
-              <a href="#about" className="transition-colors hover:text-[#e52d27]">About</a>
-              <a href="#marbling" className="transition-colors hover:text-[#e52d27]">Marbling &amp; Feed</a>
-              <a href="#contact" className="transition-colors hover:text-[#e52d27]">Contact</a>
-            </nav>
-          </div>
-
-          <div className="mt-8 flex flex-col items-center gap-3 border-t border-white/10 pt-6 text-[11px] text-[#fcfaf6]/40 md:flex-row md:justify-between">
-            <span className="font-[var(--font-serif)] italic">© Australian Country Choice, 2026</span>
-            <span className="font-[var(--font-serif)] italic">A fully integrated beef business</span>
-          </div>
-        </div>
-      </footer>
     </div>
   );
 }
 
 function Divider() {
   return (
-    <div className="mx-auto mt-12 flex max-w-md items-center gap-3 text-[#e52d27]/70 reveal">
+    <div className="mx-auto mt-12 flex max-w-md items-center gap-3 text-[#191851]/70 reveal">
       <div className="flex-1 h-px bg-gray-200" />
-      <svg width="40" height="10" viewBox="0 0 40 10" fill="none" className="text-[#e52d27]">
+      <svg width="40" height="10" viewBox="0 0 40 10" fill="none" className="text-[#191851]">
         <path d="M0 5 Q5 0 10 5 T20 5 T30 5 T40 5" stroke="currentColor" fill="none" />
       </svg>
       <div className="flex-1 h-px bg-gray-200" />
@@ -539,7 +511,7 @@ function ContactForm() {
   };
 
   const field =
-    "w-full rounded-md border border-white/10 bg-white/[0.04] px-4 py-3 text-sm text-[#fcfaf6] placeholder:text-[#fcfaf6]/35 outline-none transition focus:border-[#e52d27]/60 focus:ring-2 focus:ring-[#e52d27]/20";
+    "w-full rounded-md border border-white/10 bg-white/[0.04] px-4 py-3 text-sm text-[#fcfaf6] placeholder:text-[#fcfaf6]/35 outline-none transition focus:border-[#fff10b]/60 focus:ring-2 focus:ring-[#fff10b]/20";
   const label = "mb-1.5 block text-[10px] font-bold uppercase tracking-[0.2em] text-[#fcfaf6]/45";
 
   return (
@@ -582,7 +554,7 @@ function ContactForm() {
 
       <button
         type="submit"
-        className="group relative mt-6 inline-flex w-full items-center justify-center overflow-hidden rounded-md bg-[#e52d27] px-8 py-3.5 text-[11px] font-bold uppercase tracking-[0.2em] text-white transition-opacity hover:opacity-95"
+        className="group relative mt-6 inline-flex w-full items-center justify-center overflow-hidden rounded-md bg-[#191851] px-8 py-3.5 text-[11px] font-bold uppercase tracking-[0.2em] text-white transition-opacity hover:opacity-95"
       >
         <span className="relative flex items-center gap-2">
           Send Message

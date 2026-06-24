@@ -1,6 +1,6 @@
 import { COW_VIEWBOX, PRIMAL_POLYS } from "@/lib/cuts";
 
-/* A small, static cow diagram with one primal region highlighted in red —
+/* A small, static cow diagram with one primal region highlighted in navy —
    the wayfinding cue on each cut-detail page. */
 export default function CowMini({
   active,
@@ -25,7 +25,7 @@ export default function CowMini({
         className="absolute inset-0 h-full w-full"
       >
         {polys.map((pts, i) => (
-          <polygon key={i} points={pts} className="fill-[#e52d27]" />
+          <polygon key={i} points={pts} className="fill-[#191851]" />
         ))}
       </svg>
     </div>

@@ -47,6 +47,7 @@ export const PRIMALS: Record<string, Primal> = {
     items: [
       { name: "RIBEYE STEAK", sub: "(Prime Rib)", img: "/images/ribeye.jpg", code: "Cube Roll · 2090", description: "Cut from the rib primal, the ribeye is prized for its abundant marbling and the soft cap of fat that frames the eye. As it cooks, that fat renders through the muscle for a juicy, full-bodied flavour that defines premium Australian beef.", methods: ["grill", "pan", "roast"] },
       { name: "BACK RIBS", sub: "(Beef Ribs)", img: "/images/steak-board.jpg", code: "Rib Prepared · 2335", description: "The meat between the rib bones — lean, flavourful and made for low, slow cooking. Smoke or roast until tender and the connective tissue melts into the meat.", methods: ["roast", "braise"] },
+      { name: "BEEF MINCE", sub: "(Trim)", img: "/images/beef-mince.jpg", code: "Trim Mince · 2580", description: "Coarse-ground from the lean trim left after the rib is portioned, so nothing premium is wasted. A clean, all-purpose mince with a true beefy flavour — brown it hard for ragù and bolognese, or pack it into burgers, meatballs and koftas.", methods: ["pan", "braise"] },
     ],
   },
   short_loin: {

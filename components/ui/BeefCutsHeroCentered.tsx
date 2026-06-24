@@ -39,6 +39,11 @@ export default function BeefCutsHeroCentered() {
   const [blinkId, setBlinkId] = useState<string | null>(null); // self-running hover tour
   const detailsRef = useRef<HTMLDivElement | null>(null);
   const sectionRef = useRef<HTMLElement | null>(null);
+  // Horizontal steaks row: track whether more cuts exist off either edge so we
+  // can show a scroll arrow that hints "there's more" (chuck has 7 cuts).
+  const steaksScrollRef = useRef<HTMLDivElement | null>(null);
+  const [canScrollLeft, setCanScrollLeft] = useState(false);
+  const [canScrollRight, setCanScrollRight] = useState(false);
 
   // On load: let pieces start off-screen, then trigger the assemble, then settle.
   useEffect(() => {
@@ -121,10 +126,10 @@ export default function BeefCutsHeroCentered() {
 
   const getPathClass = (id: string) => {
     if (selectedCut === id)
-      return "fill-[#e52d27]/90 stroke-white stroke-[2] cursor-pointer transition-all duration-300";
+      return "fill-[#191851]/90 stroke-white stroke-[2] cursor-pointer transition-all duration-300";
     if (blinkId === id)
-      return "fill-[#e52d27]/60 stroke-white stroke-[2] cursor-pointer transition-all duration-300";
-    return "fill-transparent stroke-white/70 hover:fill-[#e52d27]/60 hover:stroke-white hover:stroke-[2] cursor-pointer transition-all duration-300";
+      return "fill-[#191851]/60 stroke-white stroke-[2] cursor-pointer transition-all duration-300";
+    return "fill-transparent stroke-white/70 hover:fill-[#191851]/60 hover:stroke-white hover:stroke-[2] cursor-pointer transition-all duration-300";
   };
 
   const handleCutClick = useCallback(
@@ -132,11 +137,40 @@ export default function BeefCutsHeroCentered() {
     [],
   );
 
+  // Read the steaks row's scroll position to decide which arrows to show.
+  const updateScrollHints = useCallback(() => {
+    const el = steaksScrollRef.current;
+    if (!el) return;
+    const { scrollLeft, scrollWidth, clientWidth } = el;
+    setCanScrollLeft(scrollLeft > 4);
+    setCanScrollRight(scrollLeft + clientWidth < scrollWidth - 4);
+  }, []);
+
+  const scrollSteaks = useCallback((dir: 1 | -1) => {
+    const el = steaksScrollRef.current;
+    if (!el) return;
+    el.scrollBy({ left: dir * el.clientWidth * 0.8, behavior: "smooth" });
+  }, []);
+
+  // When the panel opens (or its cut changes) reset to the start and recompute
+  // the arrows once layout has settled; also keep them correct on resize.
+  useEffect(() => {
+    if (!showPanel) return;
+    const el = steaksScrollRef.current;
+    if (el) el.scrollLeft = 0;
+    const t = setTimeout(updateScrollHints, 60);
+    window.addEventListener("resize", updateScrollHints);
+    return () => {
+      clearTimeout(t);
+      window.removeEventListener("resize", updateScrollHints);
+    };
+  }, [showPanel, panelCut, updateScrollHints]);
+
   return (
     <section
       id="cuts"
       ref={sectionRef}
-      className="w-full relative text-[#2c2623] font-sans antialiased selection:bg-red-200 flex flex-col items-center overflow-hidden"
+      className="w-full relative text-[#2c2623] font-sans antialiased selection:bg-blue-200 flex flex-col items-center overflow-hidden"
     >
       {/* Pasture background now lives in the page-level wrapper so it can run
           continuously from the hero down to the marquee. */}
@@ -159,7 +193,7 @@ export default function BeefCutsHeroCentered() {
           className="reveal absolute -left-10 top-1/2 -translate-y-1/2 z-0 hidden lg:flex flex-col items-start text-left select-none pointer-events-none max-w-[26rem] pr-10"
         >
           <h2 className="font-[var(--font-display)] font-semibold uppercase tracking-[0.04em] leading-[1.15] text-[#2c2623]/70 text-[clamp(1.75rem,2.8vw,3rem)] [text-shadow:0_1px_2px_rgba(252,250,246,0.6)]">
-            A <span className="text-[#e52d27]">Global</span> Leader<br />In Beef Production
+            A <span className="text-[#191851]">Global</span> Leader<br />In Beef Production
           </h2>
         </div>
 
@@ -168,7 +202,7 @@ export default function BeefCutsHeroCentered() {
           src="/images/cleaver.png"
           alt=""
           aria-hidden="true"
-          className="hidden lg:block absolute right-8 -top-8 w-36 object-contain rotate-[18deg] opacity-80 select-none pointer-events-none drop-shadow-md z-30 reveal"
+          className="hidden lg:block absolute right-8 top-6 w-36 object-contain rotate-[18deg] opacity-80 select-none pointer-events-none drop-shadow-md z-30 reveal"
           draggable={false}
         />
 
@@ -275,7 +309,7 @@ export default function BeefCutsHeroCentered() {
                   height="70"
                   viewBox="0 0 120 80"
                   fill="none"
-                  className="text-[#e52d27] mb-5 select-none pointer-events-none"
+                  className="text-[#191851] mb-5 select-none pointer-events-none"
                 >
                   <path
                     d="M110 12 C 100 4, 90 6, 84 16 C 76 30, 78 52, 66 52 C 54 52, 52 30, 62 22 C 72 14, 76 32, 66 44 C 56 56, 36 56, 18 52"
@@ -299,15 +333,14 @@ export default function BeefCutsHeroCentered() {
                 </svg>
 
                 {/* Wavy accent line */}
-                <svg width="50" height="8" viewBox="0 0 50 8" className="text-[#e52d27] mb-4">
+                <svg width="50" height="8" viewBox="0 0 50 8" className="text-[#191851] mb-4">
                   <path d="M0 4 Q 6 0, 12 4 T 24 4 T 36 4 T 50 4" stroke="currentColor" strokeWidth="2" fill="none" />
                 </svg>
 
                 <p className="font-[var(--font-serif)] italic text-[13px] lg:text-[15px] text-[#2c2623]/75 leading-relaxed">
-                  <strong className="not-italic text-[#e52d27] font-sans font-bold uppercase tracking-[0.2em] text-[10px] block mb-2">
+                  <strong className="not-italic text-[#191851] font-sans font-bold uppercase tracking-[0.2em] text-[10px] block">
                     Select a primal cut
                   </strong>
-                  from the diagram to explore its retail steaks. From robust chuck to tender short loin, discover the anatomy of premium flavor.
                 </p>
               </div>
             ) : (
@@ -315,7 +348,7 @@ export default function BeefCutsHeroCentered() {
                 <span className="text-[10px] font-bold uppercase tracking-[0.2em] text-[#b9ad9c] block mb-1">
                   Selected
                 </span>
-                <span className="text-lg font-[var(--font-display)] font-bold uppercase tracking-[0.15em] text-[#e52d27]">
+                <span className="text-lg font-[var(--font-display)] font-bold uppercase tracking-[0.15em] text-[#191851]">
                   {activeCutDetails?.title}
                 </span>
                 <p className="font-[var(--font-serif)] italic text-xs text-[#2c2623]/60 mt-2 leading-relaxed">
@@ -330,11 +363,11 @@ export default function BeefCutsHeroCentered() {
       {/* ─── Mobile Prompt ─── */}
       {!selectedCut && (
         <div className="md:hidden flex flex-col items-center text-center mt-6 px-6 mb-8">
-          <svg width="50" height="8" viewBox="0 0 50 8" className="text-[#e52d27] mb-4">
+          <svg width="50" height="8" viewBox="0 0 50 8" className="text-[#191851] mb-4">
             <path d="M0 4 Q 6 0, 12 4 T 24 4 T 36 4 T 50 4" stroke="currentColor" strokeWidth="2" fill="none" />
           </svg>
           <p className="font-[var(--font-serif)] italic text-sm text-[#2c2623]/75 leading-relaxed max-w-xs">
-            <strong className="not-italic text-[#e52d27] font-sans font-bold uppercase tracking-[0.2em] text-[10px] block mb-1.5">
+            <strong className="not-italic text-[#191851] font-sans font-bold uppercase tracking-[0.2em] text-[10px] block mb-1.5">
               Select a primal cut
             </strong>
             from the diagram to explore its retail steaks.
@@ -361,7 +394,7 @@ export default function BeefCutsHeroCentered() {
               {/* Panel Header */}
               <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 border-b border-white/10 pb-6 mb-8">
                 <div>
-                  <span className="text-[#e52d27] text-[10px] font-bold tracking-[0.25em] uppercase block mb-1.5">
+                  <span className="text-[#fff10b] text-[10px] font-bold tracking-[0.25em] uppercase block mb-1.5">
                     Retail Cuts
                   </span>
                   <h3 className="text-xl sm:text-2xl md:text-3xl font-[var(--font-display)] font-light tracking-[0.18em] uppercase text-white">
@@ -374,43 +407,82 @@ export default function BeefCutsHeroCentered() {
                   aria-label="Close details"
                 >
                   <span>Close</span>
-                  <X className="w-5 h-5 border border-neutral-700 rounded-full p-0.5 group-hover:border-[#e52d27] group-hover:text-[#e52d27] transition-all duration-300" />
+                  <X className="w-5 h-5 border border-neutral-700 rounded-full p-0.5 group-hover:border-[#fff10b] group-hover:text-[#fff10b] transition-all duration-300" />
                 </button>
               </div>
 
-              {/* Steaks Grid */}
-              <div className="w-full overflow-x-auto pb-2 custom-scrollbar">
-                <div className="flex sm:grid sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-x-6 gap-y-10 min-w-max sm:min-w-0">
-                  {panelDetails.items.map((item, idx) => (
-                    <Link
-                      key={idx}
-                      href={`/cuts/${steakSlug(panelCut ?? "", item.name)}`}
-                      className="flex flex-col items-center text-center group w-28 sm:w-auto cursor-pointer"
-                      style={{
-                        opacity: showPanel ? 1 : 0,
-                        transform: showPanel ? "translateY(0)" : "translateY(20px)",
-                        transition: `opacity 0.5s ease ${idx * 0.08}s, transform 0.5s ease ${idx * 0.08}s`,
-                      }}
-                    >
-                      <div className="w-20 h-20 sm:w-24 sm:h-24 rounded-full overflow-hidden bg-neutral-800 mb-3 border-2 border-neutral-700/50 group-hover:border-[#e52d27] transition-all duration-500 shadow-lg">
-                        <img
-                          src={item.img}
-                          alt={item.name}
-                          className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
-                          onError={(e) => { e.currentTarget.style.display = "none"; }}
-                        />
-                      </div>
-                      <span className="text-[10px] sm:text-[11px] font-bold tracking-[0.15em] text-neutral-200 uppercase line-clamp-2 group-hover:text-white transition-colors">
-                        {item.name}
-                      </span>
-                      <span className="text-[9px] sm:text-[10px] text-neutral-500 mt-0.5 font-[var(--font-serif)] italic">
-                        {item.sub}
-                      </span>
-                      <span className="mt-2 text-[8px] font-bold uppercase tracking-[0.2em] text-[#e52d27] opacity-0 group-hover:opacity-100 transition-opacity">
-                        View cut →
-                      </span>
-                    </Link>
-                  ))}
+              {/* Steaks — a single horizontal row. When more cuts exist than fit,
+                  an arrow at the end hints "there's more" and scrolls the row. */}
+              <div className="relative">
+                <div
+                  ref={steaksScrollRef}
+                  onScroll={updateScrollHints}
+                  className="w-full overflow-x-auto pb-2 custom-scrollbar"
+                >
+                  <div className="flex flex-nowrap gap-x-8 min-w-max">
+                    {panelDetails.items.map((item, idx) => (
+                      <Link
+                        key={idx}
+                        href={`/cuts/${steakSlug(panelCut ?? "", item.name)}`}
+                        className="flex flex-col items-center text-center group w-36 shrink-0 cursor-pointer"
+                        style={{
+                          opacity: showPanel ? 1 : 0,
+                          transform: showPanel ? "translateY(0)" : "translateY(20px)",
+                          transition: `opacity 0.5s ease ${idx * 0.08}s, transform 0.5s ease ${idx * 0.08}s`,
+                        }}
+                      >
+                        <div className="w-28 h-28 sm:w-32 sm:h-32 rounded-full overflow-hidden bg-neutral-800 mb-4 border-2 border-neutral-700/50 group-hover:border-[#fff10b] transition-all duration-500 shadow-lg">
+                          <img
+                            src={item.img}
+                            alt={item.name}
+                            className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
+                            onError={(e) => { e.currentTarget.style.display = "none"; }}
+                          />
+                        </div>
+                        <span className="text-[11px] sm:text-[12px] font-bold tracking-[0.15em] text-neutral-200 uppercase line-clamp-2 group-hover:text-white transition-colors">
+                          {item.name}
+                        </span>
+                        <span className="text-[10px] sm:text-[11px] text-neutral-500 mt-0.5 font-[var(--font-serif)] italic">
+                          {item.sub}
+                        </span>
+                        <span className="mt-2 text-[8px] font-bold uppercase tracking-[0.2em] text-[#fff10b] opacity-0 group-hover:opacity-100 transition-opacity">
+                          View cut →
+                        </span>
+                      </Link>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Left fade + arrow — appears once scrolled away from the start */}
+                <div
+                  className={`pointer-events-none absolute left-0 top-0 bottom-2 flex items-center justify-start pr-12 bg-gradient-to-r from-[#1c1a19] via-[#1c1a19]/85 to-transparent transition-opacity duration-300 ${canScrollLeft ? "opacity-100" : "opacity-0"}`}
+                >
+                  <button
+                    type="button"
+                    onClick={() => scrollSteaks(-1)}
+                    aria-label="Show previous cuts"
+                    className="pointer-events-auto flex h-9 w-9 items-center justify-center rounded-full border border-neutral-700 bg-[#1c1a19] text-neutral-300 hover:border-[#fff10b] hover:text-[#fff10b] transition-colors shadow-lg"
+                  >
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+                      <path d="M15 18l-6-6 6-6" />
+                    </svg>
+                  </button>
+                </div>
+
+                {/* Right fade + arrow — indicates more cuts are available */}
+                <div
+                  className={`pointer-events-none absolute right-0 top-0 bottom-2 flex items-center justify-end pl-12 bg-gradient-to-l from-[#1c1a19] via-[#1c1a19]/85 to-transparent transition-opacity duration-300 ${canScrollRight ? "opacity-100" : "opacity-0"}`}
+                >
+                  <button
+                    type="button"
+                    onClick={() => scrollSteaks(1)}
+                    aria-label="Show more cuts"
+                    className="pointer-events-auto flex h-9 w-9 items-center justify-center rounded-full border border-neutral-700 bg-[#1c1a19] text-neutral-300 hover:border-[#fff10b] hover:text-[#fff10b] transition-colors shadow-lg"
+                  >
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+                      <path d="M9 18l6-6-6-6" />
+                    </svg>
+                  </button>
                 </div>
               </div>
             </div>
